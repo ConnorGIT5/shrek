@@ -1,4 +1,4 @@
-from flask import Flask, render_template, url_for, redirect
+from flask import Flask, render_template, url_for, redirect, flash
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import UserMixin, login_user, LoginManager, login_required, logout_user, current_user
 from flask_wtf import FlaskForm
@@ -45,7 +45,9 @@ class RegisterForm(FlaskForm):
             username = username.data).first()
 
         if existing_user_username:
+            flash("Username already exists. Pick a different one.")
             raise ValidationError("That username already exists, choose a different one.")
+            
 
 class LoginForm(FlaskForm):
     username = StringField(validators = [InputRequired(), Length(
@@ -77,7 +79,10 @@ def login():
             if bcrypt.check_password_hash(user.password, form.password.data):
                 login_user(user)
                 return redirect(url_for('dashboard'))
+        else:
+            flash("Wrong combination of username and password")
 
+                
 
     return render_template('login.html', form = form)
 
@@ -97,9 +102,9 @@ def register():
         db.session.add(new_user)
         db.session.commit()
         return redirect(url_for('login'))
-
+        
     return render_template('register.html', form = form)
-    
+
 @app.route('/logout', methods = ['GET', 'POST'])
 def logout():
     logout_user()
