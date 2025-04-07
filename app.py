@@ -80,7 +80,7 @@ def login():
                 login_user(user)
                 return redirect(url_for('dashboard'))
         else:
-            flash("Wrong combination of username and password")
+            flash("Wrong combination of username and password.")
 
                 
 
@@ -111,4 +111,8 @@ def logout():
     return redirect(url_for('login'))
 
 if __name__ == '__main__':
-    app.run(debug = True)
+    app.run(debug = True, host="0.0.0.0", port=5000)
+
+# below doesn't work with Docker Desktop
+# if __name__ == '__main__':
+#     app.run(debug = True, port=5001)
